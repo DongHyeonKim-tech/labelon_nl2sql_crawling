@@ -229,7 +229,8 @@ if __name__=="__main__":
 
                 sql = "SELECT COUNT(1) AS CNT " \
                       + "  FROM " + orig_table_name \
-                      + " WHERE REGEXP_LIKE(" + col_name + ", '^[+-]?\d*(\.?\d*)$' )"\
+                      + " WHERE REGEXP_LIKE(" + col_name + ", '^[+-]?\d*(\.?\d*)$' )" \
+                      + "   AND LENGTH(" + col_name + ") > 1 " \
                       + "   AND " + col_name + " IS NOT NULL "
 
                 cur.execute(sql)
@@ -271,9 +272,9 @@ if __name__=="__main__":
             if col_type == "DATE":
                 temp2_sql += "NVL2(" + col_name + ",REPLACE(" + col_name + ",'-','') || '000000', " + col_name + ")"
             elif col_type == "DATEDOT":
-                temp2_sql += "NVL2(" + col_name + ",REPLACE(" + col_name + ",'.','') || '000000', " + col_name + ")"
+                temp2_sql += "NVL2(" + col_name + ",REPLACE(REPLACE(" + col_name + ",'.',''),'/','') || '000000', " + col_name + ")"
             elif col_type == "DATEDOT2":
-                temp2_sql += "NVL2(" + col_name + ",REPLACE(" + col_name + ",'.','') || '0000', " + col_name + ")"
+                temp2_sql += "NVL2(" + col_name + ",REPLACE(REPLACE(" + col_name + ",'.',''),'/','') || '0000', " + col_name + ")"
             elif col_type == "DATEONLY":
                 temp2_sql += "NVL2(" + col_name + ", " + col_name + " || '000000', " + col_name + ")"
             elif col_type == "DATEYYMM":
@@ -333,6 +334,10 @@ if __name__=="__main__":
 
         cur.execute(update_column_sql, update_column_values)
 
+        pk_sql = " ALTER TABLE " + real_table_name + " ADD CONSTRAINT PK_" + real_table_name + " PRIMARY KEY(ID) "
+
+        cur.execute(pk_sql)
+
         update_column_sql = " GRANT SELECT ON LABELON." + real_table_name + " to NL2SQL"
 
         cur.execute(update_column_sql)
@@ -341,7 +346,7 @@ if __name__=="__main__":
 
         cur.execute(update_column_sql)
 
-        remove_sql = " DROP TABLE " + orig_table_name
-        cur.execute(remove_sql)
+        # remove_sql = " DROP TABLE " + orig_table_name
+        # cur.execute(remove_sql)
 
         time.sleep(2)

@@ -2,7 +2,6 @@ from selenium import webdriver
 import time
 import os
 import shutil
-from selenium.webdriver.common.by import By
 from selenium.webdriver.common.keys import Keys
 from selenium.common.exceptions import NoSuchElementException
 
@@ -22,11 +21,13 @@ if __name__ == "__main__":
     
     current_file_path = 'C:/Users/KDH/Downloads'
     
-    destination_path = 'C:/euclid/nl2sql'
+    destination_path = 'C:/euclid/nl2sql/ws'
 
     driver = webdriver.Chrome(executable_path=executable_path)
 
-    url = 'https://www.data.go.kr/tcs/dss/selectDataSetList.do?dType=FILE&keyword=&detailKeyword=&publicDataPk=&recmSe=&detailText=&relatedKeyword=&commaNotInData=&commaAndData=&commaOrData=&must_not=&tabId=&dataSetCoreTf=&coreDataNm=&sort=&relRadio=&orgFullName=&orgFilter=&org=&orgSearch=&currentPage=1&perPage=10&brm=&instt=&svcType=&kwrdArray=&extsn=CSV&coreDataNmArray=&pblonsipScopeCode='
+    # url = 'https://www.data.go.kr/tcs/dss/selectDataSetList.do?dType=FILE&keyword=&detailKeyword=&publicDataPk=&recmSe=&detailText=&relatedKeyword=&commaNotInData=&commaAndData=&commaOrData=&must_not=&tabId=&dataSetCoreTf=&coreDataNm=&sort=&relRadio=&orgFullName=&orgFilter=&org=&orgSearch=&currentPage=1&perPage=10&brm=&instt=&svcType=&kwrdArray=&extsn=CSV&coreDataNmArray=&pblonsipScopeCode='
+
+    url = 'https://www.data.go.kr/tcs/dss/selectDataSetList.do?dType=FILE&keyword=&detailKeyword=&publicDataPk=&recmSe=&detailText=&relatedKeyword=&commaNotInData=&commaAndData=&commaOrData=&must_not=&tabId=&dataSetCoreTf=&coreDataNm=&sort=&relRadio=&orgFullName=&orgFilter=&org=&orgSearch=&currentPage=231&perPage=10&brm=&instt=&svcType=&kwrdArray=&extsn=CSV&coreDataNmArray=&pblonsipScopeCode='
 
     driver.get(url)
 
@@ -35,7 +36,7 @@ if __name__ == "__main__":
     max_id_sql = "select max(id) from DATA_BASIC_INFO"
     cur.execute(max_id_sql)
     max_id = cur.fetchone()[0] + 1
-    while count < 10001:
+    while count < 2001:
         for j in range(3, 13):
             for i in range(1, 11):
                 # 암묵적 대기 5s

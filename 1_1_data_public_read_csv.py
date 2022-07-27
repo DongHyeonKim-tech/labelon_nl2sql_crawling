@@ -1,6 +1,5 @@
 import os
 import csv
-import pandas as pd
 import jaydebeapi
 import time
 import shutil
@@ -15,11 +14,11 @@ if __name__ =="__main__":
     )
     cur = conn.cursor()
 
-    path_dir = 'C:/euclid/nl2sql'
+    path_dir = 'C:/euclid/nl2sql/ws'
 
     file_list = os.listdir(path_dir)
     
-    destination_path = 'C:/euclid/done'
+    destination_path = 'C:/euclid/nl2sql/done'
 
     ## CSV 파일 읽기
     for file in file_list:
@@ -35,7 +34,6 @@ if __name__ =="__main__":
             data_list = []
             for line in rdr:
                 defined_line = [l.replace('\x00', '') for l in line]
-                print(defined_line)
                 data_list.append(defined_line)
 
             f.close()

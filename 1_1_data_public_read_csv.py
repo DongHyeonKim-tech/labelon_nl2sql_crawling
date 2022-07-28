@@ -56,9 +56,10 @@ if __name__ =="__main__":
             print("-----------------------------------")
             print('start insert')
             data_basic_id = data_basic_fetch[0]
-            physical_table_name = 'PUB_' + str(data_basic_id)
+            physical_table_name = 'NLDATA_' + str(data_basic_id).rjust(6, '0')
             orig_table_name = 'TMP100_' + str(data_basic_id)
-            TABLE_SQL = f"insert into MANAGE_PHYSICAL_TABLE(ID,DATA_BASIC_ID, LOGICAL_TABLE_KOREAN, PHYSICAL_CREATED_YN, DATA_INSERTED_YN, DATA_INSERT_ROW, TARGET_ROWS, physical_table_name, orig_table_name) VALUES('{table_max_id}', '{data_basic_id}', '{name}', 'N', 'N', '0', '{len_rows}', '{physical_table_name}', '{orig_table_name}')"
+            logical_table_english = 'DATA_TMP_' + str(data_basic_id).rjust(6, '0')
+            TABLE_SQL = f"insert into MANAGE_PHYSICAL_TABLE(ID,DATA_BASIC_ID, LOGICAL_TABLE_KOREAN, PHYSICAL_CREATED_YN, DATA_INSERTED_YN, DATA_INSERT_ROW, TARGET_ROWS, physical_table_name, orig_table_name, logical_table_english) VALUES('{table_max_id}', '{data_basic_id}', '{name}', 'N', 'N', '0', '{len_rows}', '{physical_table_name}', '{orig_table_name}', '{logical_table_english}')"
             cur.execute(TABLE_SQL)
             
             ## MANAGE_PHYSICAL_COLUMN 테이블 데이터 insert
@@ -71,9 +72,14 @@ if __name__ =="__main__":
             physical_column_order = 1
             type_sample_data = data_list[1]
             for col, d in zip(column, type_sample_data):
-                physical_column_type = 'NUMBER' if type(d) == 'int' else 'VARCHAR'
+                physical_column_type = 'NUMBER'
+                try:
+                    int(d)
+                except ValueError:
+                    physical_column_type = 'VARCHAR'
                 physical_column_name = 'COL_' + str(physical_column_order).rjust(3, '0')
-                insert_col_sql = f"insert into MANAGE_PHYSICAL_COLUMN(ID, data_physical_id, logical_column_korean, physical_column_name, physical_column_type, is_created_yn, physical_column_order, is_use_yn) VALUES('{column_max_id}', '{table_max_id}', '{col}', '{physical_column_name}', '{physical_column_type}', 'N', '{physical_column_order}', 'Y')"
+                logical_column_english = 'DATA_COL_' + str(physical_column_order).rjust(3, '0')
+                insert_col_sql = f"insert into MANAGE_PHYSICAL_COLUMN(ID, data_physical_id, logical_column_korean, physical_column_name, physical_column_type, is_created_yn, physical_column_order, is_use_yn, logical_column_english) VALUES('{column_max_id}', '{table_max_id}', '{col}', '{physical_column_name}', '{physical_column_type}', 'N', '{physical_column_order}', 'Y', '{logical_column_english}')"
                 cur.execute(insert_col_sql)
                 column_max_id += 1
                 physical_column_order += 1
@@ -91,12 +97,19 @@ if __name__ =="__main__":
             col_data = ''.join(col_list)
             
             ## TMP 테이블 create
-            print("######################################")
-            print(f'table name: {orig_table_name}')
-            create_tmp_sql = f"create table {orig_table_name} (ID NUMBER, {col_data})"
-            cur.execute(create_tmp_sql)
+            # print("######################################")
+            # print(f'table name: {orig_table_name}')
+            # create_tmp_sql = f"create table {orig_table_name} (ID NUMBER, {col_data})"
+            # cur.execute(create_tmp_sql)
+            # print("-----------------------------------")
+            # print('TMP table created')
+            
+            ## NLDATA 테이블 create
+            print(f'table name: {physical_table_name}')
+            create_nl_sql = f"create table {physical_table_name} (ID NUMBER, {col_data})"
+            cur.execute(create_nl_sql)
             print("-----------------------------------")
-            print('TMP table created')
+            print('NLDATA table created')
 
             
             ## TMP 테이블에 데이터 insert
@@ -105,11 +118,14 @@ if __name__ =="__main__":
                 for dt in data:
                     single_quote_remove_list = [d.replace("'","") for d in dt]
                     defined_data = str(single_quote_remove_list).replace('[','').replace(']','').replace('"','')
-                    insert_tmp_sql = f"insert into {orig_table_name} VALUES({id}, {defined_data})"
-                    cur.execute(insert_tmp_sql)
+                    # insert_tmp_sql = f"insert into {orig_table_name} VALUES({id}, {defined_data})"
+                    # cur.execute(insert_tmp_sql)
+                    insert_nl_sql = f"insert into {physical_table_name} VALUES({id}, {defined_data})"
+                    cur.execute(insert_nl_sql)
                     id += 1
                 print("-----------------------------------")
-                print('TMP_DATA inserted')
+                # print('TMP_DATA inserted')
+                print('NLDATA inserted')
 
                 
                 ## DATA_BASIC_INFO 테이블 is_collect_yn N -> Y update

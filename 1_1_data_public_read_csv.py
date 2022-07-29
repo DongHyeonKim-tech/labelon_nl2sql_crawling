@@ -47,7 +47,7 @@ if __name__ =="__main__":
         
         print("######################################")
         print(f'file name: {name}')
-        data_basic_sql = f"select id from DATA_BASIC_INFO where DATA_NAME='{name}'"
+        data_basic_sql = f"select id from DATA_BASIC_INFO where DATA_NAME='{name}' and collect_sitd_id='2'"
         cur.execute(data_basic_sql)
         data_basic_fetch = cur.fetchone()
         len_rows = len(data_list) - 1

@@ -31,11 +31,12 @@ if __name__ == '__main__':
     for data in select_data:
       id_ = data['id']
       print(f'id: {id_}')
-      print(f'kor: {data["kor"]}')
-      result = translator.translate(data['kor'], dest='en')
+      kor = data['kor'].replace('_', ' ')
+      print(f'kor: {kor}')
+      result = translator.translate(kor, dest='en')
       logical_eng = result.text
       print(f'eng: {logical_eng}')
-      update_sql = f"update MANAGE_PHYSICAL_{table} set logical_{table}_english={logical_eng} where id={id_}"
+      update_sql = f"update MANAGE_PHYSICAL_{table} set logical_{table}_english='{logical_eng}' where id='{id_}'"
       cur.execute(update_sql)
       print('updated')
   

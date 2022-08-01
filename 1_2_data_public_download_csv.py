@@ -66,11 +66,10 @@ if __name__ == "__main__":
                     print('inserted')
                     
                     # 다운로드와 insert가 완료된 파일을 1_1_data_public_read_csv.py에 사용 가능하도록 이동
+                    time.sleep(3)
                     file_list = os.listdir(current_file_path)
                     for file in file_list:
-                        file_name = file.split('.')[0]
-                        shutil.move(f'{current_file_path}/{file}', destination_path) if file_name == name else None
-                time.sleep(2)
+                        shutil.move(f'{current_file_path}/{file}', destination_path) if file.startswith(name) else None
                 print(f'count: {count}')
                 count += 1
                 max_id += 1

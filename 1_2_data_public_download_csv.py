@@ -16,17 +16,18 @@ if __name__ == "__main__":
         "tibero6-jdbc.jar",
     )
     cur = conn.cursor()
-
+    # 크롬드라이버 다운로드 후, path 설정
     executable_path = r'C:\Users\KDH\Desktop\program\chromedriver_win32\chromedriver.exe'
-    
+    # csv 파일 다운로드 위치
     current_file_path = 'C:/Users/KDH/Downloads'
-    
+    # csv 파일 이동 dir 위치
     destination_path = 'C:/euclid/nl2sql/ws'
 
     driver = webdriver.Chrome(executable_path=executable_path)
 
     # url = 'https://www.data.go.kr/tcs/dss/selectDataSetList.do?dType=FILE&keyword=&detailKeyword=&publicDataPk=&recmSe=&detailText=&relatedKeyword=&commaNotInData=&commaAndData=&commaOrData=&must_not=&tabId=&dataSetCoreTf=&coreDataNm=&sort=&relRadio=&orgFullName=&orgFilter=&org=&orgSearch=&currentPage=1&perPage=10&brm=&instt=&svcType=&kwrdArray=&extsn=CSV&coreDataNmArray=&pblonsipScopeCode='
-
+    # csv 파일 다운로드 url
+    # 공공데이터 포털 확장자 csv 선택 후 검색 -> 파일데이터 선택 -> 페이지 선택(현재 231) -> url 복사 후 설정
     url = 'https://www.data.go.kr/tcs/dss/selectDataSetList.do?dType=FILE&keyword=&detailKeyword=&publicDataPk=&recmSe=&detailText=&relatedKeyword=&commaNotInData=&commaAndData=&commaOrData=&must_not=&tabId=&dataSetCoreTf=&coreDataNm=&sort=&relRadio=&orgFullName=&orgFilter=&org=&orgSearch=&currentPage=231&perPage=10&brm=&instt=&svcType=&kwrdArray=&extsn=CSV&coreDataNmArray=&pblonsipScopeCode='
 
     driver.get(url)
@@ -65,7 +66,7 @@ if __name__ == "__main__":
                     cur.execute(sql)
                     print('inserted')
                     
-                    # 다운로드와 insert가 완료된 파일을 1_1_data_public_read_csv.py에 사용 가능하도록 이동
+                    # 다운로드, insert가 완료된 파일을 1_1_data_public_read_csv.py에 사용 가능하도록 이동
                     time.sleep(3)
                     file_list = os.listdir(current_file_path)
                     for file in file_list:
@@ -77,4 +78,4 @@ if __name__ == "__main__":
             driver.find_element_by_xpath(f'//*[@id="fileDataList"]/nav/a[{j}]').send_keys(Keys.ENTER)
             # 암묵적 대기 5s
             driver.implicitly_wait(5)
-                
+    cur.close()

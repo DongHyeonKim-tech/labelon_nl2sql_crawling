@@ -51,7 +51,7 @@ if __name__ =="__main__":
         cur.execute(data_basic_sql)
         data_basic_fetch = cur.fetchone()
         len_rows = len(data_list) - 1
-        # 파일 명을 가진 데이터가 DATA_BASIC_INFO에 있고, 파일 확장자가 CSV이면 데이터 insert 시작
+        # DATA_BASIC_INFO 와 파일명 비교, 파일 확장자가 CSV/collect_sitd_id=2/is_collect_yn='N'일 시 id값 가져와서 insert 시작
         if data_basic_fetch and extn == 'csv':
             print("-----------------------------------")
             print('start insert')
